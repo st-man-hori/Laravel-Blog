@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Auth\PasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\Auth\VerifyEmailController;
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')
@@ -60,6 +61,6 @@ Route::prefix('admin')
             Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                         ->name('logout');
 
-            Route::get('dashboard', function () {})->name('dashboard');
+            Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         });
     });
