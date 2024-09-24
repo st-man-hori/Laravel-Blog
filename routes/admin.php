@@ -62,5 +62,11 @@ Route::prefix('admin')
                         ->name('logout');
 
             Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+            Route::prefix('post-category')
+                ->name('post-category.')
+                ->group(function () {
+                    Route::get('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'index'])->name('index');
+            });
         });
     });
