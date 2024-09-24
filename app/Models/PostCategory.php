@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class PostCategory extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
+
+    /**
+     * スラグの重複チェック
+     */
+    public function isDuplicateSlug()
+    {
+        return self::query()
+            ->where('slug', $this->slug)
+            ->exists();
+    }
 }

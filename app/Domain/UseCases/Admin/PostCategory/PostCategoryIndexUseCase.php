@@ -19,7 +19,7 @@ final class PostCategoryIndexUseCase
                 }
             })
             ->latest()
-            ->paginate(1);
+            ->paginate();
 
         $searchRequests = [
             'keyword' => $keyword,

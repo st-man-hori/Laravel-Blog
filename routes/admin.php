@@ -67,6 +67,8 @@ Route::prefix('admin')
                 ->name('post-category.')
                 ->group(function () {
                     Route::get('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'index'])->name('index');
+                    Route::get('/create', [\App\Http\Controllers\Admin\PostCategoryController::class, 'create'])->name('create');
+                    Route::post('/store', [\App\Http\Controllers\Admin\PostCategoryController::class, 'store'])->name('store');
             });
         });
     });

@@ -7,6 +7,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PostCategory\PostCategoryIndexRequest;
 use App\Domain\UseCases\Admin\PostCategory\PostCategoryIndexUseCase;
+use App\Domain\UseCases\Admin\PostCategory\PostCategoryStoreUseCase;
+use App\Http\Requests\Admin\PostCategory\PostCategoryStoreRequest;
+use Exception;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 final class PostCategoryController extends Controller
@@ -24,8 +28,32 @@ final class PostCategoryController extends Controller
         ]);
     }
 
+    /**
+     * 記事カテゴリ作成
+     */
     public function create(): View
     {
-        
+        return view('admin.post_category.create');
+    }
+
+    /**
+     * 記事カテゴリ作成
+     */
+    public function store(PostCategoryStoreRequest $request, PostCategoryStoreUseCase $useCase)
+    {
+        $postCategory = $request->makePostCategory();
+
+        try {
+            $result = $useCase->run($postCategory);
+            return redirect()->route('admin.post-category.index')
+                ->with('success', "「{$result->name}」の記事カテゴリを作成しました。");
+        } catch (ValidationException $e) {
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (Exception $e) {
+            report($e);
+            return redirect()->route('admin.post-category.create')
+                ->withInput()
+                ->with('error', '記事カテゴリの作成に失敗しました。');
+        }
     }
 }
