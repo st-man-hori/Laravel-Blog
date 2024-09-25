@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\UseCases\Admin\PostCategory;
+namespace App\UseCases\Admin\PostCategory;
 
 use App\Models\PostCategory;
 
