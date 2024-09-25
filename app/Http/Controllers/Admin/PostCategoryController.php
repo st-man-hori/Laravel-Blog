@@ -73,9 +73,9 @@ final class PostCategoryController extends Controller
     {
         $postCategory = $request->makePostCategory($id);
         try {
-            $result = $useCase->handle($postCategory);
+            $postCategoryId = $useCase->handle($postCategory);
             return redirect()->route('admin.post-category.index')
-                ->with('success', "「{$result->name}」の記事カテゴリを更新しました。");
+                ->with('success', "ID:{$postCategoryId}の記事カテゴリを更新しました。");
         } catch (ValidationException $e) {
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {

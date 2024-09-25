@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 final class PostCategoryUpdateUseCase
 {
-    public function handle(PostCategory $postCategory): PostCategory
+    public function handle(PostCategory $postCategory): int
     {
         if ($postCategory->isDuplicateSlugExcludeById($postCategory->id)) {
             throw ValidationException::withMessages([
@@ -19,11 +19,16 @@ final class PostCategoryUpdateUseCase
             ]);
         }
 
+        $originalPostCategory = PostCategory::query()->findOrFail($postCategory->id);
+
         DB::beginTransaction();
         try {
-            $postCategory->update();
+            $originalPostCategory->update([
+                'name' => $postCategory->name,
+                'slug' => $postCategory->slug,
+            ]);
             DB::commit();
-            return $postCategory;
+            return $postCategory->id;
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;
