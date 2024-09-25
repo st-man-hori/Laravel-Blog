@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 final class PostCategoryStoreUseCase
 {
-    public function run(PostCategory $postCategory): PostCategory
+    public function handle(PostCategory $postCategory): PostCategory
     {
         if ($postCategory->isDuplicateSlug()) {
             throw ValidationException::withMessages([
@@ -17,10 +17,7 @@ final class PostCategoryStoreUseCase
             ]);
         }
 
-        $maxOrder = PostCategory::query()
-            ->max('order');
-
-        $postCategory->order = ++$maxOrder;
+        $postCategory->order = $postCategory->nextOrder();
 
         $postCategory->save();
 

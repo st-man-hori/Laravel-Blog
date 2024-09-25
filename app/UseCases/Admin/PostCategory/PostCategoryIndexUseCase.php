@@ -8,7 +8,7 @@ use App\Models\PostCategory;
 
 final class PostCategoryIndexUseCase
 {
-    public function run(?string $keyword)
+    public function handle(?string $keyword)
     {
         $postCategories = PostCategory::query()
             // フリーワード検索

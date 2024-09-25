@@ -6,9 +6,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PostCategory\PostCategoryIndexRequest;
-use App\Domain\UseCases\Admin\PostCategory\PostCategoryIndexUseCase;
-use App\Domain\UseCases\Admin\PostCategory\PostCategoryStoreUseCase;
+use App\UseCases\Admin\PostCategory\PostCategoryIndexUseCase;
+use App\UseCases\Admin\PostCategory\PostCategoryStoreUseCase;
 use App\Http\Requests\Admin\PostCategory\PostCategoryStoreRequest;
+use App\UseCases\Admin\PostCategory\PostCategoryEditUseCase;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -20,7 +21,7 @@ final class PostCategoryController extends Controller
      */
     public function index(PostCategoryIndexRequest $request, PostCategoryIndexUseCase $useCase): View
     {
-        $result = $useCase->run($request->keyword);
+        $result = $useCase->handle($request->keyword);
 
         return view('admin.post_category.index', [
             'postCategories' => $result['postCategories'],
@@ -44,7 +45,7 @@ final class PostCategoryController extends Controller
         $postCategory = $request->makePostCategory();
 
         try {
-            $result = $useCase->run($postCategory);
+            $result = $useCase->handle($postCategory);
             return redirect()->route('admin.post-category.index')
                 ->with('success', "「{$result->name}」の記事カテゴリを作成しました。");
         } catch (ValidationException $e) {
@@ -55,5 +56,19 @@ final class PostCategoryController extends Controller
                 ->withInput()
                 ->with('error', '記事カテゴリの作成に失敗しました。');
         }
+    }
+
+    public function edit(int $id, PostCategoryEditUseCase $useCase): View
+    {
+        $postCategory = $useCase->handle($id);
+
+        return view('admin.post_category.edit', [
+            'postCategory' => $postCategory
+        ]);
+    }
+
+    public function update(int $id)
+    {
+        
     }
 }

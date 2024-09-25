@@ -17,10 +17,23 @@ class PostCategory extends Model
     /**
      * スラグの重複チェック
      */
-    public function isDuplicateSlug()
+    public function isDuplicateSlug(): bool
     {
         return self::query()
             ->where('slug', $this->slug)
             ->exists();
+    }
+
+    /**
+     * 次の並び順
+     *
+     * 新規作成時は、最大の並び順 + 1とするため
+     */
+    public function nextOrder(): int
+    {
+        $maxOrder = self::query()
+            ->max('order');
+
+        return ++$maxOrder;
     }
 }

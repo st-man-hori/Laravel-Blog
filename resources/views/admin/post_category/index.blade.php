@@ -32,7 +32,9 @@
                 @foreach ($postCategories as $postCategory)
                     <tr>
                         <td>{{ $postCategory->id }}</td>
-                        <td>{{ $postCategory->name }}</td>
+                        <td>
+                            <a href="{{ route('admin.post-category.edit', $postCategory) }}">{{ $postCategory->name }}</a>
+                        </td>
                         <td>{{ $postCategory->slug }}</td>
                         <td>{{ $postCategory->created_at }}</td>
                     </tr>
