@@ -25,6 +25,17 @@ class PostCategory extends Model
     }
 
     /**
+     * 指定のID以外のスラグの重複チェック
+     */
+    public function isDuplicateSlugExcludeById(int $id): bool
+    {
+        return self::query()
+            ->where('slug', $this->slug)
+            ->where('id', '!=', $id)
+            ->exists();
+    }
+
+    /**
      * 次の並び順
      *
      * 新規作成時は、最大の並び順 + 1とするため

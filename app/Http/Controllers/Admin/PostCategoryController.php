@@ -9,7 +9,9 @@ use App\Http\Requests\Admin\PostCategory\PostCategoryIndexRequest;
 use App\UseCases\Admin\PostCategory\PostCategoryIndexUseCase;
 use App\UseCases\Admin\PostCategory\PostCategoryStoreUseCase;
 use App\Http\Requests\Admin\PostCategory\PostCategoryStoreRequest;
+use App\Http\Requests\Admin\PostCategory\PostCategoryUpdateRequest;
 use App\UseCases\Admin\PostCategory\PostCategoryEditUseCase;
+use App\UseCases\Admin\PostCategory\PostCategoryUpdateUseCase;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -67,8 +69,20 @@ final class PostCategoryController extends Controller
         ]);
     }
 
-    public function update(int $id)
+    public function update(int $id, PostCategoryUpdateRequest $request, PostCategoryUpdateUseCase $useCase)
     {
-        
+        $postCategory = $request->makePostCategory($id);
+        try {
+            $result = $useCase->handle($postCategory);
+            return redirect()->route('admin.post-category.index')
+                ->with('success', "「{$result->name}」の記事カテゴリを更新しました。");
+        } catch (ValidationException $e) {
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (Exception $e) {
+            report($e);
+            return redirect()->route('admin.post-category.edit', $id)
+                ->withInput()
+                ->with('error', '記事カテゴリの更新に失敗しました。');
+        }
     }
 }
