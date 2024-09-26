@@ -6,7 +6,7 @@ namespace App\UseCases\Admin\PostCategory;
 
 use App\Models\PostCategory;
 
-final class PostCategoryIndexUseCase
+final class IndexAction
 {
     public function handle(?string $keyword)
     {

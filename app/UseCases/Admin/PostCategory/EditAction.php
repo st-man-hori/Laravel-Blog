@@ -6,7 +6,7 @@ namespace App\UseCases\Admin\PostCategory;
 
 use App\Models\PostCategory;
 
-final class PostCategoryEditUseCase
+final class EditAction
 {
     public function handle(int $id): PostCategory
     {

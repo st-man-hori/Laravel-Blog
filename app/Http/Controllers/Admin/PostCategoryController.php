@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PostCategory\PostCategoryIndexRequest;
-use App\UseCases\Admin\PostCategory\PostCategoryIndexUseCase;
-use App\UseCases\Admin\PostCategory\PostCategoryStoreUseCase;
+use App\UseCases\Admin\PostCategory\IndexAction;
+use App\UseCases\Admin\PostCategory\StoreAction;
 use App\Http\Requests\Admin\PostCategory\PostCategoryStoreRequest;
 use App\Http\Requests\Admin\PostCategory\PostCategoryUpdateRequest;
-use App\UseCases\Admin\PostCategory\PostCategoryEditUseCase;
-use App\UseCases\Admin\PostCategory\PostCategoryUpdateUseCase;
+use App\UseCases\Admin\PostCategory\EditAction;
+use App\UseCases\Admin\PostCategory\UpdateAction;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -21,9 +21,9 @@ final class PostCategoryController extends Controller
     /**
      * 記事カテゴリ一覧
      */
-    public function index(PostCategoryIndexRequest $request, PostCategoryIndexUseCase $useCase): View
+    public function index(PostCategoryIndexRequest $request, IndexAction $action): View
     {
-        $result = $useCase->handle($request->keyword);
+        $result = $action->handle($request->keyword);
 
         return view('admin.post_category.index', [
             'postCategories' => $result['postCategories'],
@@ -42,12 +42,12 @@ final class PostCategoryController extends Controller
     /**
      * 記事カテゴリ作成
      */
-    public function store(PostCategoryStoreRequest $request, PostCategoryStoreUseCase $useCase)
+    public function store(PostCategoryStoreRequest $request, StoreAction $action)
     {
         $postCategory = $request->makePostCategory();
 
         try {
-            $result = $useCase->handle($postCategory);
+            $result = $action->handle($postCategory);
             return redirect()->route('admin.post-category.index')
                 ->with('success', "「{$result->name}」の記事カテゴリを作成しました。");
         } catch (ValidationException $e) {
@@ -60,20 +60,20 @@ final class PostCategoryController extends Controller
         }
     }
 
-    public function edit(int $id, PostCategoryEditUseCase $useCase): View
+    public function edit(int $id, EditAction $action): View
     {
-        $postCategory = $useCase->handle($id);
+        $postCategory = $action->handle($id);
 
         return view('admin.post_category.edit', [
             'postCategory' => $postCategory
         ]);
     }
 
-    public function update(int $id, PostCategoryUpdateRequest $request, PostCategoryUpdateUseCase $useCase)
+    public function update(int $id, PostCategoryUpdateRequest $request, UpdateAction $action)
     {
         $postCategory = $request->makePostCategory($id);
         try {
-            $postCategoryId = $useCase->handle($postCategory);
+            $postCategoryId = $action->handle($postCategory);
             return redirect()->route('admin.post-category.index')
                 ->with('success', "ID:{$postCategoryId}の記事カテゴリを更新しました。");
         } catch (ValidationException $e) {

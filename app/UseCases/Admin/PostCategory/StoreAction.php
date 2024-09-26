@@ -7,7 +7,7 @@ namespace App\UseCases\Admin\PostCategory;
 use App\Models\PostCategory;
 use Illuminate\Validation\ValidationException;
 
-final class PostCategoryStoreUseCase
+final class StoreAction
 {
     public function handle(PostCategory $postCategory): PostCategory
     {

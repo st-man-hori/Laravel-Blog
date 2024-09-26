@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final class PostCategoryUpdateUseCase
+final class UpdateAction
 {
     public function handle(PostCategory $postCategory): int
     {
