@@ -15,6 +15,7 @@ use App\UseCases\Admin\PostCategory\UpdateAction;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use RealRashid\SweetAlert\Facades\Alert;
 
 final class PostCategoryController extends Controller
 {
@@ -48,15 +49,15 @@ final class PostCategoryController extends Controller
 
         try {
             $result = $action->handle($postCategory);
-            return redirect()->route('admin.post-category.index')
-                ->with('success', "「{$result->name}」の記事カテゴリを作成しました。");
+
+            Alert::toast("ID:{$result}の記事カテゴリを作成しました。", 'success');
+            return redirect()->route('admin.post-category.index');
         } catch (ValidationException $e) {
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {
             report($e);
-            return redirect()->route('admin.post-category.create')
-                ->withInput()
-                ->with('error', '記事カテゴリの作成に失敗しました。');
+            Alert::toast('記事カテゴリの作成に失敗しました。', 'error');
+            return redirect()->route('admin.post-category.create')->withInput();
         }
     }
 
@@ -74,15 +75,15 @@ final class PostCategoryController extends Controller
         $postCategory = $request->makePostCategory($id);
         try {
             $postCategoryId = $action->handle($postCategory);
-            return redirect()->route('admin.post-category.index')
-                ->with('success', "ID:{$postCategoryId}の記事カテゴリを更新しました。");
+
+            Alert::toast("ID:{$postCategoryId}の記事カテゴリを更新しました。", 'success');
+            return redirect()->route('admin.post-category.index');
         } catch (ValidationException $e) {
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {
             report($e);
-            return redirect()->route('admin.post-category.edit', $id)
-                ->withInput()
-                ->with('error', '記事カテゴリの更新に失敗しました。');
+            Alert::toast('記事カテゴリの更新に失敗しました。', 'error');
+            return redirect()->route('admin.post-category.edit', $id)->withInput();
         }
     }
 }
